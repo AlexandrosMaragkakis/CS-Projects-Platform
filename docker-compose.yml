@@ -1,0 +1,36 @@
+# dev yaml, rename later to docker-compose.dev.yml to distinct from prod
+# diff is bind volume on flask app, debug enabled (hot reload) and unsafe neo4j pwd 
+services:
+  backend:
+    build:
+      context: ./app
+    container_name: flask-app
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./app:/app   
+    #depends_on:
+    #  - neo4j
+    environment:
+      FLASK_ENV: development # Enable development mode for Flask
+    restart:
+      always
+
+#  neo4j:
+#    image: neo4j:latest
+#    container_name: neo4j-db
+#    volumes:
+#      - neo4j_data:/data  
+#      - neo4j_logs:/logs  
+#    ports:
+#      - "7474:7474"   # web interface
+#      - "7687:7687"   # Bolt protocol (used by drivers)
+#    environment:
+#      - NEO4J_AUTH=neo4j/test1234 # not secure
+#    restart:
+#      always
+
+
+#volumes:
+#  neo4j_data:
+#  neo4j_logs:

@@ -1,0 +1,6 @@
+.flake8
+
+*.tmp
+
+app/.env
+__pycache__/
