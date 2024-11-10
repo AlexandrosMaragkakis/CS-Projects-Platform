@@ -1,6 +1,7 @@
-from flask import render_template, jsonify, request, url_for, redirect, session
-from flask_login import login_user, logout_user, login_required
-from .models import User
+from flask import jsonify, request, url_for, redirect, session  # type: ignore
+from flask_login import login_user, logout_user, login_required  # type: ignore
+
+# from .models import User
 from app.blueprints.auth import auth_bp
 from .services import authenticate_user, register_user
 
@@ -16,6 +17,7 @@ def login():
     user = authenticate_user(email, password)
     if user:
         login_user(user)
+
         return jsonify({"success": True, "redirect_url": url_for("main.profile")})
     else:
         return jsonify({"success": False, "message": "Invalid email or password."})
@@ -111,7 +113,8 @@ def github_callback():
 @auth_bp.route("/github_auth", methods=["GET"])
 @login_required
 def github_auth():
-    github_auth_url = f"{GITHUB_AUTH_URL}?client_id={GITHUB_CLIENT_ID}&scope=repo&redirect_uri={url_for('callback', _external=True)}"
+    github_auth_url = f"{GITHUB_AUTH_URL}?client_id={GITHUB_CLIENT_ID}&scope=repo& \
+        "redirect_uri={url_for('callback', _external=True)}"
     return redirect(github_auth_url)
 
 

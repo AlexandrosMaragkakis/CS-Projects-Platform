@@ -1,5 +1,6 @@
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash  # type: ignore
 from .models import User, Student, Company
+from flask import session  # type: ignore
 
 
 def register_user(
@@ -29,7 +30,10 @@ def register_user(
 
 def authenticate_user(email, password):
     user = User.get_by_email(email)
+
     if user and check_password_hash(user.password_hash, password):
+        if user.github_token and user.github_username:
+            session["github_authenticated"] = True
         return user
     return None
 

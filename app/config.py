@@ -1,22 +1,24 @@
 import os
+from dotenv import load_dotenv
+
+
+load_dotenv(os.path.join(os.path.dirname(__file__), ".env"))
 
 
 class Config:
     """Base configuration with default settings."""
 
     # Secret key for session management and CSRF protection
-    SECRET_KEY = os.getenv(
-        "SECRET_KEY", "your-default-secret-key"
-    )  # Replace with a real secret in production
+    SECRET_KEY = os.environ.get("SECRET_KEY", "your-default-secret-key")
 
     # Neo4j Database URI
-    NEO4J_URI = os.getenv("NEO4J_URI", "neo4j:7687")
-    NEO4J_USERNAME = os.getenv("NEO4J_USERNAME", "neo4j")
-    NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD", "test1234")
+    NEO4J_URI = os.environ.get("NEO4J_URI", "neo4j:7687")
+    NEO4J_USERNAME = os.environ.get("NEO4J_USERNAME", "neo4j")
+    NEO4J_PASSWORD = os.environ.get("NEO4J_PASSWORD", "test1234")
 
     # GitHub OAuth settings (if using GitHub for authentication)
-    GITHUB_CLIENT_ID = os.getenv("GITHUB_CLIENT_ID", "your-github-client-id")
-    GITHUB_CLIENT_SECRET = os.getenv(
+    GITHUB_CLIENT_ID = os.environ.get("GITHUB_CLIENT_ID", "your-github-client-id")
+    GITHUB_CLIENT_SECRET = os.environ.get(
         "GITHUB_CLIENT_SECRET", "your-github-client-secret"
     )
 
@@ -33,7 +35,7 @@ class DevelopmentConfig(Config):
     """Development-specific configuration."""
 
     DEBUG = True
-    # NEO4J_URI = os.getenv("DEV_NEO4J_URI", "bolt://localhost:7687")
+    # NEO4J_URI = os.environ.get("DEV_NEO4J_URI", "bolt://localhost:7687")
     SESSION_COOKIE_SECURE = False  # In development, HTTPS is typically not used
 
 
@@ -42,9 +44,9 @@ class TestingConfig(Config):
 
     TESTING = True
     DEBUG = True
-    NEO4J_URI = os.getenv("TEST_NEO4J_URI", "bolt://localhost:7687")
-    NEO4J_USERNAME = os.getenv("TEST_NEO4J_USERNAME", "neo4j")
-    NEO4J_PASSWORD = os.getenv("TEST_NEO4J_PASSWORD", "test-password")
+    NEO4J_URI = os.environ.get("TEST_NEO4J_URI", "bolt://localhost:7687")
+    NEO4J_USERNAME = os.environ.get("TEST_NEO4J_USERNAME", "neo4j")
+    NEO4J_PASSWORD = os.environ.get("TEST_NEO4J_PASSWORD", "test-password")
     SESSION_COOKIE_SECURE = False  # Tests usually run in an HTTP context
 
 
@@ -53,7 +55,7 @@ class ProductionConfig(Config):
 
     DEBUG = False
     TESTING = False
-    NEO4J_URI = os.getenv("PROD_NEO4J_URI", "bolt://prod-neo4j-host:7687")
+    NEO4J_URI = os.environ.get("PROD_NEO4J_URI", "bolt://prod-neo4j-host:7687")
     SESSION_COOKIE_SECURE = True  # Enforce HTTPS for security in production
     REMEMBER_COOKIE_DURATION = (
         86400  # Longer 'remember me' duration in production (24 hours)

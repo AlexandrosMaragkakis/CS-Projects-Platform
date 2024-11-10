@@ -5,7 +5,7 @@
     <h2>Submit Your Projects</h2>
     
     <!-- GitHub Connection Section -->
-    {% if not session.get('access_token') %}
+    {% if not session.get('github_authenticated') %}
       <button class="btn btn-info" id="githubConnectBtn">Connect to GitHub</button>
     {% else %}
       <div class="alert alert-success mt-3" role="alert">
@@ -72,7 +72,7 @@
 {% block scripts %}
   <script>
     document.getElementById("githubConnectBtn").addEventListener("click", function() {
-    window.location.href = "/github_auth"; 
+    window.location.href = "/github/connect"; 
   });
   </script>
 

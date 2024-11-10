@@ -1,32 +1,38 @@
-from flask_login import LoginManager
-from neomodel import config as neomodel_config
+from flask_login import LoginManager  # type: ignore
+from neomodel import config as neomodel_config  # type: ignore
 
-# from authlib.integrations.flask_client import OAuth
+from authlib.integrations.flask_client import OAuth  # type: ignore
 from .blueprints.auth.models import User
 
 
+login_manager = LoginManager()
+
+
+@login_manager.user_loader
 def load_user(user_id):
     return User.get_by_id(user_id)
 
 
-login_manager = LoginManager()
-login_manager.user_loader(load_user)
-# oauth = OAuth()
+# login_manager.user_loader(load_user)
+oauth = OAuth()
 
 
 def init_extensions(app):
 
     login_manager.init_app(app)
 
-    # oauth.init_app(app)
-    # oauth.register(
-    #    name="github",
-    #    client_id=app.config["GITHUB_CLIENT_ID"],
-    #    client_secret=app.config["GITHUB_CLIENT_SECRET"],
-    #    authorize_url=app.config["GITHUB_AUTHORIZE_URL"],
-    #    access_token_url=app.config["GITHUB_ACCESS_TOKEN_URL"],
-    #    client_kwargs={"scope": "repo"},
-    # )
+    oauth.init_app(app)
+    oauth.register(
+        name="github",
+        client_id=app.config["GITHUB_CLIENT_ID"],
+        client_secret=app.config["GITHUB_CLIENT_SECRET"],
+        authorize_url=app.config["GITHUB_AUTHORIZE_URL"],
+        access_token_url=app.config["GITHUB_ACCESS_TOKEN_URL"],
+        access_token_params=None,
+        base_url=app.config["GITHUB_API_BASE_URL"],
+        authorize_params=None,
+        client_kwargs={"scope": "repo"},
+    )
 
     configure_neo4j(app)
 

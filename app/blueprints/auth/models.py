@@ -1,4 +1,4 @@
-from neomodel import (
+from neomodel import (  # type: ignore
     StructuredNode,
     StringProperty,
     UniqueIdProperty,
@@ -6,7 +6,7 @@ from neomodel import (
     EmailProperty,
 )
 
-from flask_login import UserMixin
+from flask_login import UserMixin  # type: ignore
 
 
 class User(StructuredNode, UserMixin):
