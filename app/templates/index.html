@@ -1,38 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CS Project Submission</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
+{% extends "base.html" %}
 
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#">CS Project Platform</a>
-      <div class="collapse navbar-collapse justify-content-end">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link active" href="#">Home</a>
-          </li>
-          {% if not current_user.is_authenticated %}
-          <li class="nav-item">
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#authModal">Login/Register</button>
-          </li>
-          {% else %}
-          <li class="nav-item">
-            <a class="nav-link" href="/profile">Profile</a>
-          </li>
-          <li class="nav-item">
-            <button class="btn btn-primary" id="logoutBtn">Logout</button>
-          </li>
-          {% endif %}
-        </ul>
-      </div>
-    </div>
-  </nav>
+{% block content %}
 
   <!-- Main Content -->
   <div class="container text-center mt-5">
@@ -59,6 +27,7 @@
           </ul>
 
           <div class="tab-content mt-3" id="authTabsContent">
+
             <!-- Login Form -->
             <div class="tab-pane fade show active" id="login" role="tabpanel">
               <form id="loginForm">
@@ -78,8 +47,53 @@
                 <button type="submit" id="loginBtn" class="btn btn-success">Login</button>
               </form>
             </div>
+            
+            <!-- Register Form with User Type Selection -->
+            <div class="tab-pane fade" id="register" role="tabpanel">
+              <form id="registerForm">
+                <div class="mb-3">
+                  <label for="userType" class="form-label">Select User Type</label>
+                  <select class="form-control" id="userType" name="user_type" required>
+                    <option value="">Select user type...</option>
+                    <option value="student">Student</option>
+                    <option value="company">Business Representative</option>
+                  </select>
+                </div>
 
+                <!-- Common Fields -->
+                <div class="mb-3">
+                  <label for="fullName" class="form-label">Full Name</label>
+                  <input type="text" class="form-control" id="fullName" name="full_name" required>
+                </div>
+                <div class="mb-3">
+                  <label for="registerEmail" class="form-label">Email</label>
+                  <input type="email" class="form-control" id="registerEmail" name="email" required>
+                </div>
+                <div class="mb-3">
+                  <label for="registerPassword" class="form-label">Password</label>
+                  <input type="password" class="form-control" id="registerPassword" name="password" required>
+                </div>
+                <div class="mb-3">
+                  <label for="confirmPassword" class="form-label">Confirm Password</label>
+                  <input type="password" class="form-control" id="confirmPassword" name="confirm_password" required>
+                </div>
+
+
+                <!-- Fields for company -->
+                <div id="companyFields" style="display: none;">
+                  <div class="mb-3">
+                    <label for="companyName" class="form-label">Company Name</label>
+                    <input type="text" class="form-control" id="companyName" name="company_name" required>
+                  </div>
+                </div>
+
+                <div id="error-message-register" class="alert alert-danger" style="display:none;"></div>
+                <button type="submit" id="registerBtn" class="btn btn-primary">Register</button>
+              </form>
+            </div>
+            
             <!-- Register Form -->
+            <!--
             <div class="tab-pane fade" id="register" role="tabpanel">
               <form id="registerForm">
                 <div class="mb-3">
@@ -101,18 +115,22 @@
                 <div id="error-message-register" class="alert alert-danger" style="display:none;"></div>
                 <button type="submit" id="registerBtn" class="btn btn-primary">Register</button>
               </form>
-            </div>
+            </div>   
+            --->
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+{% endblock %}
+
+{% block scripts %}
+
   
-  <script>
+<!-- Login/Register Script -->  
+<script>
     document.getElementById('loginForm').addEventListener('submit', async function(e) {
         e.preventDefault();  // Prevent the default form submission
       
@@ -123,7 +141,7 @@
 
         try {
             // Send POST request using fetch
-            const response = await fetch("{{ url_for('login') }}", {
+            const response = await fetch("{{ url_for('auth.login') }}", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -149,6 +167,7 @@
         }
     });
 
+    /*
     document.getElementById('registerForm').addEventListener('submit', async function(e) {
         e.preventDefault();  // Prevent the default form submission
       
@@ -161,7 +180,7 @@
 
         try {
             // Send POST request using fetch
-            const response = await fetch("{{ url_for('register') }}", {
+            const response = await fetch("{{ url_for('auth.register_student') }}", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -178,7 +197,7 @@
             } else {
                 // If registration fails, display the error message
                 document.getElementById('error-message-register').textContent = result.message;
-                document.getElementById('error-message-register').style.display = 'block';
+                document.getElementById('error-messagef-register').style.display = 'block';
             }
         } catch (error) {
             // Handle network or unexpected errors
@@ -186,28 +205,86 @@
             document.getElementById('error-message-register').style.display = 'block';
         }
     });
+
+    */
+
+    document.getElementById('userType').addEventListener('change', function () {
+      const userType = this.value;
+      //console.log(userType);
+      document.getElementById('companyFields').style.display = userType === 'company' ? 'block' : 'none';
+      const companyNameField = document.getElementById('companyName');
+      companyNameField.required = userType === 'company';
+    });
+
     
-    
-    
-</script>
-{% if current_user.is_authenticated %}
-<script>
-  document.getElementById('logoutBtn').addEventListener('click', function() {
-      window.location.href = '/logout';
+  document.getElementById('registerForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const userType = document.getElementById('userType').value;
+    const formData = {
+      full_name: document.getElementById('fullName').value,
+      email: document.getElementById('registerEmail').value,
+      password: document.getElementById('registerPassword').value,
+      confirm_password: document.getElementById('confirmPassword').value
+    };
+
+    // Add specific fields based on the selected user type
+    if (userType === 'company') {
+      formData.company_name = document.getElementById('companyName').value;
+    }
+
+    let endpoint = '';
+    if (userType === 'student') {
+      endpoint = "{{ url_for('auth.register_student') }}";
+    } else if (userType === 'company') {
+      endpoint = "{{ url_for('auth.register_company') }}";
+    } else {
+      document.getElementById('error-message-register').textContent = 'Please select a user type.';
+      document.getElementById('error-message-register').style.display = 'block';
+      return;
+    }
+
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        window.location.href = result.redirect_url;
+      } else {
+        document.getElementById('error-message-register').textContent = result.message;
+        document.getElementById('error-message-register').style.display = 'block';
+      }
+    } catch (error) {
+      document.getElementById('error-message-register').textContent = 'An error occurred. Please try again.';
+      document.getElementById('error-message-register').style.display = 'block';
+    }
   });
-
+    
+    
 </script>
-{% endif %}
 
+
+
+<!-- Open the login modal automatically if the URL contains the query parameter ?next=login_required -->
 <script>
-  // Check if the URL contains the query parameter ?next=login_required
+  
   $(document).ready(function() {
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.get('next') === 'login_required') {
-          $('#authModal').modal('show');  // Automatically show the login modal
+          $('#authModal').modal('show');
       }
   });
 </script>
 
-</body>
-</html>
+
+
+{% endblock %}
+
+

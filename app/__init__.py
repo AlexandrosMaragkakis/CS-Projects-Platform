@@ -1,0 +1,26 @@
+# app/__init__.py
+from flask import Flask
+from .config import config_by_name
+from .extentions import init_extensions
+from .blueprints.auth import auth_bp
+from .blueprints.main import main_bp
+
+# from .blueprints.projects import projects_bp
+# from .blueprints.search import search_bp
+
+
+def create_app(config_name=None):
+    app = Flask(__name__, static_url_path="/static")
+    app.config.from_object(config_by_name[config_name or "development"])
+    print(app.config)
+    init_extensions(app)
+    register_blueprints(app)
+
+    return app
+
+
+def register_blueprints(app):
+    app.register_blueprint(main_bp)
+    app.register_blueprint(auth_bp)
+    # app.register_blueprint(projects_bp)
+    # app.register_blueprint(search_bp)

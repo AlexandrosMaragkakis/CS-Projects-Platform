@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CS Project Submission</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* Style for active navbar link */
+    .navbar-nav .nav-link.active {
+    color: #007bff;  /* Bootstrap primary color */
+    font-weight: bold;
+    text-decoration: underline;  /* Use text-decoration for exact word length */
+    text-decoration-thickness: 2px;  /* Adjust underline thickness */
+    text-underline-offset: 3px;  /* Space between text and underline */
+}
+
+.navbar-nav .nav-link {
+    color: #555;  /* Default color */
+    transition: color 0.3s ease, text-decoration-thickness 0.3s ease;  /* Smooth transitions */
+}
+  
+    .navbar-nav .nav-link:hover {
+      color: #007bff; /* Change color on hover */
+      font-weight: bold;
+    }
+  </style>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #fff; padding: 10px 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/" style="font-weight: 600; font-size: 1.2rem; color: #333;">CS Project Platform</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarContent">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="/" style="font-size: 0.95rem; color: #555; padding-right: 20px;">Home</a>
+        </li>
+        {% if not current_user.is_authenticated %}
+        <li class="nav-item">
+          <button class="btn" data-bs-toggle="modal" data-bs-target="#authModal" style="background-color: #007bff; color: white; font-size: 0.9rem; padding: 8px 16px; border-radius: 4px;">Login/Register</button>
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <a class="nav-link" href="/profile" style="font-size: 0.95rem; color: #555; padding-right: 20px;">Profile</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/submit" style="font-size: 0.95rem; color: #555; padding-right: 20px;">Submit</a>
+        </li>
+        <li class="nav-item">
+          <button class="btn" id="logoutBtn" style="background-color: #dc3545; color: white; font-size: 0.9rem; padding: 8px 16px; border-radius: 4px;">Logout</button>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+</nav>
+
+
+  {% block content %}
+  {% endblock %}
+
+  {% block scripts %}
+  {% endblock %}
+  
+  <script defer>
+    document.addEventListener('DOMContentLoaded', function () {
+      document.querySelectorAll('a.nav-link').forEach(function (link) {
+        if (link.getAttribute('href') === window.location.pathname) {
+          link.classList.add('active');
+        }
+      });
+    });
+  </script>
+
+  {% if current_user.is_authenticated %}
+  <script>
+    document.getElementById('logoutBtn').addEventListener('click', function() {
+      window.location.href = '/logout';
+    });
+  </script>
+  {% endif %}
+
+  
+
+</body>
+</html>
+

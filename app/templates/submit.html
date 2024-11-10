@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="container mt-5">
+    <h2>Submit Your Projects</h2>
+    
+    <!-- GitHub Connection Section -->
+    {% if not session.get('access_token') %}
+      <button class="btn btn-info" id="githubConnectBtn">Connect to GitHub</button>
+    {% else %}
+      <div class="alert alert-success mt-3" role="alert">
+        <i class="bi bi-check-circle-fill"></i> GitHub Connected
+      </div>
+    <!-- Add New Project Button -->
+    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#projectModal">Add New Project</button>
+    {% endif %}
+    
+    
+
+     <!-- Modal for Adding Projects -->
+<div class="modal fade" id="projectModal" tabindex="-1" aria-labelledby="projectModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="projectModalLabel">Select GitHub Repositories</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Select the repositories you'd like to submit:</p>
+        <ul class="list-group" id="repoList">
+          <!-- Repositories will be loaded here dynamically via JavaScript -->
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="submitReposBtn" class="btn btn-primary">Submit Selected Repositories</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+    <!-- List of Submitted Projects (Using Cards) -->
+<h3 class="mt-5 text-center">Your Projects</h3>
+<div class="row row-cols-1 row-cols-md-3 g-4">
+  {% if repos %}
+  {% for repo in repos %}
+    <div class="col">
+      <div class="card shadow-sm h-100">
+        <div class="card-body d-flex flex-column">
+          <!-- Project Title -->
+          <h5 class="card-title">{{ repo.name }}</h5>
+          
+          <!-- Project Topics or Description -->
+          <p class="card-text text-muted">
+            {{ repo.topics | default('No topics available') }}
+          </p>
+          
+          <!-- Spacing between content and button -->
+          <div class="mt-auto">
+            <!-- Delete Button -->
+            <button class="btn btn-danger w-100" onclick="deleteProject('{{ repo.name }}')">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+  {% endif %}
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    document.getElementById("githubConnectBtn").addEventListener("click", function() {
+    window.location.href = "/github_auth"; 
+  });
+  </script>
+
+
+
+<script>
+  // Function to load repositories when the modal is opened
+  document.getElementById('projectModal').addEventListener('show.bs.modal', function (event) {
+    // Fetch repositories from the server
+    fetch("/get_repos", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      const repoList = document.getElementById("repoList");
+      repoList.innerHTML = "";
+
+      if (data.success) {
+        // Populate the list with repositories and checkboxes
+        data.repos.forEach(repo => {
+          const li = document.createElement("li");
+          li.classList.add("list-group-item", "d-flex", "align-items-center", "justify-content-between");
+
+          li.innerHTML = `
+            <span>${repo.name}</span>
+            <input type="checkbox" class="repo-checkbox" value="${repo.name}">
+          `;
+          repoList.appendChild(li);
+        });
+      } else {
+        repoList.innerHTML = "<li class='list-group-item'>Failed to load repositories.</li>";
+      }
+    })
+    .catch(error => {
+      const repoList = document.getElementById("repoList");
+      repoList.innerHTML = "<li class='list-group-item'>Error fetching repositories.</li>";
+    });
+  });
+
+  // Handle submission of selected repositories
+  document.getElementById("submitReposBtn").addEventListener("click", function() {
+    // Get all selected repositories
+    const selectedRepos = Array.from(document.querySelectorAll(".repo-checkbox:checked")).map(cb => cb.value);
+
+    if (selectedRepos.length > 0) {
+      // Send the selected repos to the server
+      fetch("/submit_repos", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ repositories: selectedRepos })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          alert("Repositories submitted successfully!");
+          // Refresh the page to update the list of submitted projects
+          location.reload();
+          // Optionally close the modal
+          const modal = bootstrap.Modal.getInstance(document.getElementById('projectModal'));
+          modal.hide();
+        } else {
+          alert("Failed to submit repositories.");
+        }
+      })
+      .catch(error => {
+        console.error("Error submitting repositories:", error);
+        alert("Error submitting repositories.");
+      });
+    } else {
+      alert("Please select at least one repository.");
+    }
+  });
+</script>
+
+
+
+{% endblock %}
+
