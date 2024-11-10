@@ -8,7 +8,7 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - ./app:/app   
+      - .:/flask-app   
     depends_on:
       - neo4j
     environment:
