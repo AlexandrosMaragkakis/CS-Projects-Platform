@@ -32,8 +32,6 @@ def authenticate_user(email, password):
     user = User.get_by_email(email)
 
     if user and check_password_hash(user.password_hash, password):
-        if user.github_token and user.github_username:
-            session["github_authenticated"] = True
         return user
     return None
 

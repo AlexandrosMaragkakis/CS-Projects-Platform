@@ -5,8 +5,9 @@
     <h2>Submit Your Projects</h2>
     
     <!-- GitHub Connection Section -->
-    {% if not session.get('github_authenticated') %}
+    {% if session.get('github_authenticated') != True %}
       <button class="btn btn-info" id="githubConnectBtn">Connect to GitHub</button>
+      
     {% else %}
       <div class="alert alert-success mt-3" role="alert">
         <i class="bi bi-check-circle-fill"></i> GitHub Connected
@@ -15,28 +16,29 @@
     <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#projectModal">Add New Project</button>
     {% endif %}
     
+
     
 
      <!-- Modal for Adding Projects -->
-<div class="modal fade" id="projectModal" tabindex="-1" aria-labelledby="projectModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="projectModalLabel">Select GitHub Repositories</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <p>Select the repositories you'd like to submit:</p>
-        <ul class="list-group" id="repoList">
-          <!-- Repositories will be loaded here dynamically via JavaScript -->
-        </ul>
-      </div>
-      <div class="modal-footer">
-        <button type="button" id="submitReposBtn" class="btn btn-primary">Submit Selected Repositories</button>
+    <div class="modal fade" id="projectModal" tabindex="-1" aria-labelledby="projectModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="projectModalLabel">Select GitHub Repositories</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p>Select the repositories you'd like to submit:</p>
+            <ul class="list-group" id="repoList">
+              <!-- Repositories will be loaded here dynamically via JavaScript -->
+            </ul>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="submitReposBtn" class="btn btn-primary">Submit Selected Repositories</button>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
 
 
     <!-- List of Submitted Projects (Using Cards) -->
@@ -82,7 +84,7 @@
   // Function to load repositories when the modal is opened
   document.getElementById('projectModal').addEventListener('show.bs.modal', function (event) {
     // Fetch repositories from the server
-    fetch("/get_repos", {
+    fetch("{{ url_for('project_submissions.fetch_repos') }}", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -122,7 +124,7 @@
 
     if (selectedRepos.length > 0) {
       // Send the selected repos to the server
-      fetch("/submit_repos", {
+      fetch("projects/submit_repos", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

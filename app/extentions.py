@@ -4,6 +4,8 @@ from neomodel import config as neomodel_config  # type: ignore
 from authlib.integrations.flask_client import OAuth  # type: ignore
 from .blueprints.auth.models import User
 
+from flask import request, jsonify, redirect, url_for  # type: ignore
+
 
 login_manager = LoginManager()
 
@@ -11,6 +13,14 @@ login_manager = LoginManager()
 @login_manager.user_loader
 def load_user(user_id):
     return User.get_by_id(user_id)
+
+
+@login_manager.unauthorized_handler
+def unauthorized():
+
+    return redirect(url_for("main.home", next="login_required"))
+    # return jsonify({"success": False, "message": "Please log in to access this page.",
+    # "redirect": redirect_url}), 401
 
 
 # login_manager.user_loader(load_user)

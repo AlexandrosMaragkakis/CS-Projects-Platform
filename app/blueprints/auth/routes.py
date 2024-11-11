@@ -1,11 +1,9 @@
 from flask import jsonify, request, url_for, redirect, session  # type: ignore
-from flask_login import login_user, logout_user, login_required  # type: ignore
+from flask_login import login_user, logout_user, current_user  # type: ignore
 
 # from .models import User
 from app.blueprints.auth import auth_bp
 from .services import authenticate_user, register_user
-
-# from app.extentions import oauth
 
 
 @auth_bp.route("/login", methods=["POST"])
@@ -15,9 +13,15 @@ def login():
     password = data.get("password")
 
     user = authenticate_user(email, password)
-    if user:
+    if user is not None:
         login_user(user)
-
+        if user.github_token is not None and user.github_username is not None:
+            session["github_authenticated"] = True
+        else:
+            session["github_authenticated"] = False
+        # write session to file
+        with open("session.txt.tmp", "w") as f:
+            f.write(str(session))
         return jsonify({"success": True, "redirect_url": url_for("main.profile")})
     else:
         return jsonify({"success": False, "message": "Invalid email or password."})
@@ -40,6 +44,10 @@ def register_student():
     )
     if user:
         login_user(user)
+        if user.github_token is not None and user.github_username is not None:
+            session["github_authenticated"] = True
+        else:
+            session["github_authenticated"] = False
         return jsonify({"success": True, "redirect_url": url_for("main.profile")})
     else:
         return jsonify({"success": False, "message": "Something went wrong."})
@@ -63,15 +71,14 @@ def register_company():
         company_name=company_name,
     )
     if user:
-        login_user(user)
-        return jsonify({"success": True, "redirect_url": url_for("main.profile")})
+        return redirect(url_for("main.home", next="login_required"))
     else:
         return jsonify({"success": False, "message": "Something went wrong."})
 
 
 @auth_bp.route("/logout")
-@login_required
 def logout():
+    session.clear()
     logout_user()
     session.clear()
     return redirect(url_for("main.home"))

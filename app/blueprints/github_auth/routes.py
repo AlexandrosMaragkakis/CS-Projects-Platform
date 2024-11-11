@@ -38,7 +38,7 @@ def github_callback():
             500,
         )
 
-    if not update_github_token(current_user.get_id(), token):
+    if not update_github_token(current_user.get_id(), token["access_token"]):
         return (
             jsonify({"success": False, "message": "Failed to update GitHub token."}),
             500,
