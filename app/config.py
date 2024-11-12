@@ -60,6 +60,7 @@ class ProductionConfig(Config):
     REMEMBER_COOKIE_DURATION = (
         86400  # Longer 'remember me' duration in production (24 hours)
     )
+    PROPAGATE_EXCEPTIONS = False
 
 
 # Dictionary to map configuration names

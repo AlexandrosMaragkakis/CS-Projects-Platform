@@ -21,8 +21,6 @@ def load_user(user_id):
 def unauthorized():
 
     return redirect(url_for("main.home", next="login_required"))
-    # return jsonify({"success": False, "message": "Please log in to access this page.",
-    # "redirect": redirect_url}), 401
 
 
 # login_manager.user_loader(load_user)

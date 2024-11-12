@@ -1,6 +1,6 @@
-from flask import render_template
+from flask import render_template  # type: ignore
 from . import main_bp
-from flask_login import login_required, current_user
+from flask_login import login_required, current_user  # type: ignore
 
 
 # Home Page
