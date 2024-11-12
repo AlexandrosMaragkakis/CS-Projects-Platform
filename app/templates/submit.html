@@ -41,33 +41,53 @@
     </div>
 
 
-    <!-- List of Submitted Projects (Using Cards) -->
-<h3 class="mt-5 text-center">Your Projects</h3>
-<div class="row row-cols-1 row-cols-md-3 g-4">
-  {% if repos %}
-  {% for repo in repos %}
-    <div class="col">
-      <div class="card shadow-sm h-100">
-        <div class="card-body d-flex flex-column">
-          <!-- Project Title -->
-          <h5 class="card-title">{{ repo.name }}</h5>
-          
-          <!-- Project Topics or Description -->
-          <p class="card-text text-muted">
-            {{ repo.topics | default('No topics available') }}
-          </p>
-          
-          <!-- Spacing between content and button -->
-          <div class="mt-auto">
-            <!-- Delete Button -->
-            <button class="btn btn-danger w-100" onclick="deleteProject('{{ repo.name }}')">Delete</button>
+    <!-- List of Submitted Projects (Enhanced Cards) -->
+    <h3 class="mt-5 text-center">Your Projects</h3>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+      {% if repos %}
+      {% for repo in repos %}
+        <div class="col">
+          <div class="card shadow-lg h-100 border-0">
+            <!-- Card Header with a Background Color -->
+            <div class="card-header bg-primary text-white text-center">
+              <h5 class="card-title mb-0">{{ repo.title }}</h5>
+            </div>
+            
+            <div class="card-body d-flex flex-column">
+              <!-- Project Topics as Badges -->
+              <div class="mb-3">
+                {% if repo.topics %}
+                  {% for topic in repo.topics %}
+                    <span class="badge bg-info me-1">{{ topic }}</span>
+                  {% endfor %}
+                {% else %}
+                  <span class="badge bg-light text-dark">Topics not available</span>
+                {% endif %}
+              </div>
+              
+              <!-- Project Description -->
+              <p class="card-text text-muted">
+                {% if repo.description != None %}
+                  {{ repo.description }}
+                {% else %}
+                  No description available
+                {% endif %}
+              </p>
+              
+              <!-- Spacing between content and button -->
+              <div class="mt-auto">
+                <!-- Delete Button -->
+                <button class="btn btn-outline-danger w-100" onclick="deleteProject('{{ repo.name }}')">Delete</button>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      {% endfor %}
+      {% else %}
+        <p class="text-center">No projects available.</p>
+      {% endif %}
     </div>
-  {% endfor %}
-  {% endif %}
-</div>
+  </div>
 
 {% endblock %}
 
@@ -124,7 +144,7 @@
 
     if (selectedRepos.length > 0) {
       // Send the selected repos to the server
-      fetch("projects/submit_repos", {
+      fetch("{{ url_for('project_submissions.submit_repos') }}", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
