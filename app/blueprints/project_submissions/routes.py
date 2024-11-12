@@ -7,6 +7,7 @@ from .services import (
     submit_repos_to_db,
     get_topics,
 )
+from app.extentions import cache
 
 
 @project_submissions_bp.route("/submit", methods=["GET"])
@@ -20,9 +21,15 @@ def submit():
 @project_submissions_bp.route("/projects/fetch_repos", methods=["POST"])
 @login_required
 def fetch_repos():
+    cached_result = cache.get("fetched_repos")
+    if cached_result:
+        # log cached_result to file
+        with open("cached_result.txt.tmp", "a") as f:
+            f.write(str(cached_result) + "\n")
+        return {"success": True, "repos": cached_result}
     user_id = current_user.get_id()
-
     repos = fetch_public_repos(user_id)
+    cache.set("fetched_repos", repos, timeout=60)
 
     return {"success": True, "repos": repos}
 

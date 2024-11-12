@@ -1,5 +1,6 @@
 from flask_login import LoginManager  # type: ignore
 from neomodel import config as neomodel_config  # type: ignore
+from flask_caching import Cache  # type: ignore
 
 from authlib.integrations.flask_client import OAuth  # type: ignore
 from .blueprints.auth.models import User
@@ -8,6 +9,7 @@ from flask import request, jsonify, redirect, url_for  # type: ignore
 
 
 login_manager = LoginManager()
+cache = Cache(config={"CACHE_TYPE": "simple"})
 
 
 @login_manager.user_loader
@@ -45,6 +47,8 @@ def init_extensions(app):
     )
 
     configure_neo4j(app)
+
+    cache.init_app(app)
 
 
 def configure_neo4j(app):
