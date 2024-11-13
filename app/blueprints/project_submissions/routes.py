@@ -6,6 +6,7 @@ from .services import (
     fetch_public_repos,
     submit_repos_to_db,
     get_topics,
+    delete_project,
 )
 from app.extentions import cache
 
@@ -21,15 +22,16 @@ def submit():
 @project_submissions_bp.route("/projects/fetch_repos", methods=["POST"])
 @login_required
 def fetch_repos():
-    cached_result = cache.get("fetched_repos")
+    user_id = current_user.get_id()
+    cached_result = cache.get(f"fetched_repos_{user_id}")
     if cached_result:
-        # log cached_result to file
+        # log cached_result to file, probably useful for metrics
         with open("cached_result.txt.tmp", "a") as f:
             f.write(str(cached_result) + "\n")
         return {"success": True, "repos": cached_result}
-    user_id = current_user.get_id()
+
     repos = fetch_public_repos(user_id)
-    cache.set("fetched_repos", repos, timeout=60)
+    cache.set(f"fetched_repos_{user_id}", repos, timeout=60)
 
     return {"success": True, "repos": repos}
 
@@ -44,11 +46,27 @@ def submit_repos():
     filtered_repositories = [
         repo for repo in session["fetched_repos"] if repo["name"] in repositories
     ]
-    submit_repos_to_db(user_id, filtered_repositories)
+    try:
+        submit_repos_to_db(user_id, filtered_repositories)
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+    return {"success": True}
 
     # Update the list of submitted projects
-    submitted_repos = get_submitted_repos(user_id)
+    # submitted_repos = get_submitted_repos(user_id)
     # log submitted_repos to file
-    with open("submitted_repos.txt.tmp", "a") as f:
-        f.write(str(submitted_repos) + "\n")
-    return render_template("submit.html", user=current_user, repos=submitted_repos)
+    # with open("submitted_repos.txt.tmp", "a") as f:
+    #    f.write(str(submitted_repos) + "\n")
+    # return render_template("submit.html", user=current_user, repos=submitted_repos)
+
+
+@project_submissions_bp.route("/projects/delete/<int:github_id>", methods=["POST"])
+@login_required
+def delete(github_id):
+    try:
+        delete_project(github_id)
+
+        return {"success": True}
+    except Exception as e:
+        return {"success": False, "error": str(e)}

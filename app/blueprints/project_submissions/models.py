@@ -3,12 +3,15 @@ from neomodel import (  # type: ignore
     StringProperty,
     UniqueIdProperty,
     Relationship,
+    IntegerProperty,
 )
+from neomodel import db  # type: ignore
 
 
 class Project(StructuredNode):
     uid = UniqueIdProperty()
-    github_url = StringProperty(unique_index=True)
+    github_id = IntegerProperty(unique_index=True)
+    github_url = StringProperty()
     title = StringProperty()
     description = StringProperty()
 
@@ -17,3 +20,11 @@ class Project(StructuredNode):
 
 class Topic(StructuredNode):
     name = StringProperty(unique_index=True)
+
+    def delete_if_orphan(self):
+        count = db.cypher_query(
+            f"MATCH p=(t:Topic{{name: '{self.name}'}})-[r:TAGGED_WITH]-(a) RETURN count(p)"
+        )[0][0][0]
+
+        if count == 0:
+            self.delete()

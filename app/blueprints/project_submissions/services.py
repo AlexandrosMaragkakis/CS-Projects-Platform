@@ -20,30 +20,41 @@ def get_topics(projects):
 
 
 def submit_repos_to_db(user_id, repositories):
+    try:
+        for repo in repositories:
 
-    for repo in repositories:
+            submitted_repos = get_submitted_repos(user_id)
 
-        # Create a new project
-        project = Project(
-            title=repo["name"], github_url=repo["url"], description=repo["description"]
-        )
-        project.save()
+            if repo["url"] in [project.github_url for project in submitted_repos]:
+                continue
 
-        # Connect the project to the user
-        user = Student.get_by_id(user_id)
-        user.worked_in.connect(project)
-        user.save()
-
-        # Connect the project to the topics
-        for topic_name in repo["topics"]:
-            topic = Topic.nodes.get_or_none(name=topic_name)
-            if topic is None:
-                topic = Topic(name=topic_name)
-                topic.save()
-
-            project.tagged_with.connect(topic)
-
+            # Create a new project
+            project = Project(
+                github_id=repo["github_id"],
+                title=repo["name"],
+                github_url=repo["url"],
+                description=repo["description"],
+            )
             project.save()
+
+            # Connect the project to the user
+            user = Student.get_by_id(user_id)
+            user.worked_in.connect(project)
+            user.save()
+
+            # Connect the project to the topics
+            for topic_name in repo["topics"]:
+                topic = Topic.nodes.get_or_none(name=topic_name)
+                if topic is None:
+                    topic = Topic(name=topic_name)
+                    topic.save()
+
+                project.tagged_with.connect(topic)
+
+                project.save()
+
+    except Exception as e:
+        raise e
 
 
 def fetch_public_repos(user_id):
@@ -74,9 +85,12 @@ def fetch_public_repos(user_id):
         if len(repos) < 100:
             break
         page += 1
-
+    # log response to file
+    # with open("repos_response.txt.tmp", "w") as f:
+    #    f.write(str(repos_response.json()))
     filtered_repos = [
         {
+            "github_id": repo["id"],
             "name": repo["name"],
             "url": repo["html_url"],
             "description": repo["description"],
@@ -90,3 +104,15 @@ def fetch_public_repos(user_id):
     with open("filtered_repos.txt.tmp", "w") as f:
         f.write(str(filtered_repos))
     return filtered_repos
+
+
+def delete_project(github_id):
+    project = Project.nodes.get_or_none(github_id=github_id)
+    if project is None:
+        raise ValueError(f"Project with github_id {github_id} not found")
+
+    topics = project.tagged_with.all()
+    project.delete()
+
+    for topic in topics:
+        topic.delete_if_orphan()

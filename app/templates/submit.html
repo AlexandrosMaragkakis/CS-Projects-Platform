@@ -77,7 +77,7 @@
               <!-- Spacing between content and button -->
               <div class="mt-auto">
                 <!-- Delete Button -->
-                <button class="btn btn-outline-danger w-100" onclick="deleteProject('{{ repo.name }}')">Delete</button>
+                <button class="btn btn-outline-danger w-100" onclick="deleteProject('{{ repo.github_id }}')">Delete</button>
               </div>
             </div>
           </div>
@@ -174,7 +174,28 @@
   });
 </script>
 
-
+<script>
+  function deleteProject(github_id) {
+    fetch("/projects/delete/" + github_id, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        alert("Project deleted successfully!");
+        window.location.reload(); // Refresh the page
+      } else {
+        alert("Error deleting project: " + data.error); // Display error message in alert box
+      }
+    })
+    .catch(error => {
+      alert("Error deleting project: " + error.message); // Display error message in alert box
+    });
+  }
+</script>
 
 {% endblock %}
 

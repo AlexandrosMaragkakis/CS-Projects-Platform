@@ -20,8 +20,8 @@ def login():
         else:
             session["github_authenticated"] = False
         # write session to file
-        with open("session.txt.tmp", "w") as f:
-            f.write(str(session))
+        # with open("session.txt.tmp", "w") as f:
+        #    f.write(str(session))
         return jsonify({"success": True, "redirect_url": url_for("main.profile")})
     else:
         return jsonify({"success": False, "message": "Invalid email or password."})
