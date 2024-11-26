@@ -45,13 +45,16 @@ def submit_repos_to_db(user_id, repositories):
             # Connect the project to the topics
             for topic_name in repo["topics"]:
                 topic = Topic.nodes.get_or_none(name=topic_name)
+
                 if topic is None:
                     topic = Topic(name=topic_name)
                     topic.save()
 
                 project.tagged_with.connect(topic)
+                user.skilled_in.connect(topic)
 
                 project.save()
+            user.save()
 
     except Exception as e:
         raise e

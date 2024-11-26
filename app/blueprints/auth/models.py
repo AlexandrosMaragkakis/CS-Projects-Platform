@@ -48,10 +48,12 @@ class Student(User):
     worked_in = Relationship(
         "app.blueprints.project_submissions.models.Project", "WORKED_IN"
     )
+    skilled_in = Relationship(
+        "app.blueprints.project_submissions.models.Topic", "SKILLED_IN"
+    )
     # interested_in = Relationship(
     #    "app.blueprints.project_submissions.models.Topic", "INTERESTED_IN"
     # )
-    # skilled_topics = RelationshipTo("Topic", "SKILLED_IN")
 
 
 class Company(User):
