@@ -12,7 +12,9 @@
           <h5 class="mb-0">User Information</h5>
         </div>
         <div class="card-body">
+          {% if user_info.github_url %}
           <p><strong>Github:</strong> <a href="{{ user_info.github_url }}" target="_blank">{{ user_info.github_url }}</a></p>
+          {% endif %}
           <p><strong>Email:</strong> {{ user_info.email }}</p>
         </div>
       </div>

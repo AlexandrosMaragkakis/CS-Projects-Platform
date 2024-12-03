@@ -7,11 +7,15 @@ def get_user_info(username):
     if user is None:
         return None
 
+    github_url = None
+    if user.github_username is not None:
+        github_url = "https://github.com/" + user.github_username
+
     user_info = {
         "username": user.username,
         "full_name": user.full_name,
         "email": user.email,
-        "github_url": "https://github.com/" + user.github_username,
+        "github_url": github_url,
     }
 
     return user_info
