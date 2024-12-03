@@ -13,7 +13,13 @@ def register_user(
     hashed_password = generate_password_hash(password)
 
     if user_type == "student":
-        user = Student(email=email, password_hash=hashed_password, full_name=full_name)
+        username = email.split("@")[0]
+        user = Student(
+            email=email,
+            password_hash=hashed_password,
+            full_name=full_name,
+            username=username,
+        )
     elif user_type == "company":
         user = Company(
             email=email,
@@ -34,27 +40,3 @@ def authenticate_user(email, password):
     if user and check_password_hash(user.password_hash, password):
         return user
     return None
-
-
-"""
-def github_oauth():
-    # Redirect to GitHub for authentication
-    github = oauth.create_client("github")
-    redirect_uri = url_for("auth.github_callback", _external=True)
-    return github.authorize_redirect(redirect_uri)
-
-
-def github_oauth_callback():
-    # Handle GitHub OAuth callback and retrieve user information
-    github = oauth.create_client("github")
-    token = github.authorize_access_token()
-    github_user = github.get("user").json()
-
-    # Find or create a user with the GitHub information
-    username = github_user["login"]
-    user = User.get_by_username(username)
-    if not user:
-        user = User(username=username)
-        user.save()
-    return user
-"""
