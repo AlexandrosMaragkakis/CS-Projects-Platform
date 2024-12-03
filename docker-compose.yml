@@ -23,19 +23,23 @@ services:
     volumes:
       - neo4j_data:/data  
       - neo4j_logs:/logs  
+      - ./create-indexes.bash:/startup/create-indexes.bash
+      - ./custom-docker-entrypoint.sh:/startup/docker-entrypoint.sh
     ports:
       - "7474:7474"   # web interface
       - "7687:7687"   # Bolt protocol (used by drivers)
     environment:
       - NEO4J_AUTH=neo4j/test1234 # not secure
+      - EXTENSION_SCRIPT=/startup/create-indexes.bash
     restart:
       always
     healthcheck:
       test: wget http://localhost:7687 || exit 1
-      interval: 3s
-      timeout: 10s
-      retries: 20
-      start_period: 3s
+      interval: 10s
+      timeout: 30s
+      retries: 6
+      start_period: 15s
+    
 
 
 volumes:
