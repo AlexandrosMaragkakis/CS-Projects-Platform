@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center">Find Developers</h2>
+    <p class="text-muted text-center">
+        Search for developers, topics, or projects to explore their work.
+    </p>
+
+    <!-- Search Type Selector -->
+    <div class="btn-group mb-4" role="group" aria-label="Search Type">
+        <button type="button" class="btn btn-outline-primary active" id="search-topic-btn">Search for Topic</button>
+        <button type="button" class="btn btn-outline-primary" id="search-user-btn">Search for User</button>
+        <button type="button" class="btn btn-outline-primary" id="search-project-btn">Search for Project</button>
+    </div>
+
+    <!-- Search Input -->
+    <div class="input-group my-4">
+        <input 
+            type="text" 
+            id="search-bar" 
+            class="form-control" 
+            placeholder="Search..." 
+        />
+        <button class="btn btn-primary" id="search-button">Search</button>
+    </div>
+
+    <!-- Results Section -->
+    <div id="results-section" class="mt-4"></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchBar = document.getElementById('search-bar');
+    const searchButton = document.getElementById('search-button');
+    const resultsSection = document.getElementById('results-section');
+    
+    let searchType = 'topic'; // Default search type (topic)
+
+    // Switch between search types (Topic, User, Project)
+    const setSearchType = (type) => {
+        searchType = type;
+        document.getElementById('search-topic-btn').classList.remove('active');
+        document.getElementById('search-user-btn').classList.remove('active');
+        document.getElementById('search-project-btn').classList.remove('active');
+
+        if (type === 'topic') {
+            document.getElementById('search-topic-btn').classList.add('active');
+        } else if (type === 'user') {
+            document.getElementById('search-user-btn').classList.add('active');
+        } else if (type === 'project') {
+            document.getElementById('search-project-btn').classList.add('active');
+        }
+
+        // Reset the results section
+        resultsSection.innerHTML = '';
+    };
+
+    // Event listeners for the search type buttons
+    document.getElementById('search-topic-btn').addEventListener('click', () => setSearchType('topic'));
+    document.getElementById('search-user-btn').addEventListener('click', () => setSearchType('user'));
+    document.getElementById('search-project-btn').addEventListener('click', () => setSearchType('project'));
+
+    // Perform the search based on the selected search type
+    const performSearch = () => {
+        const query = searchBar.value.trim();
+
+        if (!query) {
+            resultsSection.innerHTML = '<div class="alert alert-warning">Please enter a search term.</div>';
+            return;
+        }
+
+        // Clear previous results
+        resultsSection.innerHTML = '<div class="spinner-border text-primary"></div>';
+
+        if (searchType === 'topic') {
+            searchForTopic(query);
+        } else if (searchType === 'user') {
+            searchForUser(query);
+        } else if (searchType === 'project') {
+            searchForProject(query);
+        }
+    };
+
+    // Search for Topic
+    const searchForTopic = (query) => {
+        fetch(`/search/topics/${encodeURIComponent(query)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    let topicsHTML = `<h4>Matching Topics</h4><ul class="list-group">`;
+                    data.topics.forEach(topic => {
+                        topicsHTML += `
+                            <li class="list-group-item">
+                                <a href="/topics/${topic.name}">${topic.name}</a>
+                            </li>`;
+                    });
+                    topicsHTML += `</ul>`;
+                    resultsSection.innerHTML = topicsHTML;
+                } else {
+                    resultsSection.innerHTML = `<div class="alert alert-warning">${data.error}</div>`;
+                }
+            })
+            .catch(err => {
+                resultsSection.innerHTML = `<div class="alert alert-danger">Error: ${err.message}</div>`;
+            });
+    };
+
+    // Search for User
+    
+    const searchForUser = (query) => {
+        fetch(`/search/users?query=${encodeURIComponent(query)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    let usersHTML = `<h4>Matching Users</h4><ul class="list-group">`;
+                    data.users.forEach(user => {
+                        usersHTML += `
+                            <li class="list-group-item">
+                                <!--<h5>${user.name}</h5>-->
+                                <a href="/users/${user.username}">${user.name}</a>
+                            </li>`;
+                    });
+                    usersHTML += `</ul>`;
+                    resultsSection.innerHTML = usersHTML;
+                } else {
+                    resultsSection.innerHTML = `<div class="alert alert-warning">${data.error}</div>`;
+                }
+            })
+            .catch(err => {
+                resultsSection.innerHTML = `<div class="alert alert-danger">Error: ${err.message}</div>`;
+            });
+    };
+
+    // Search for Project
+    const searchForProject = (query) => {
+        fetch(`/search/projects?query=${encodeURIComponent(query)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    let projectsHTML = `<h4>Matching Projects</h4><ul class="list-group">`;
+                    data.projects.forEach(project => {
+                        projectsHTML += `
+                            <li class="list-group-item">
+                                <h5>${project.title}, by <a href="/users/${project.username}">${project.full_name}</a></h5>
+                                <a href="${project.github_url}" target="_blank" class="btn btn-sm btn-outline-primary">View on GitHub</a>
+                            </li>`;
+                    });
+                    projectsHTML += `</ul>`;
+                    resultsSection.innerHTML = projectsHTML;
+                } else {
+                    resultsSection.innerHTML = `<div class="alert alert-warning">${data.error}</div>`;
+                }
+            })
+            .catch(err => {
+                resultsSection.innerHTML = `<div class="alert alert-danger">Error: ${err.message}</div>`;
+            });
+    };
+
+    // Trigger search on button click or Enter key press
+    searchButton.addEventListener('click', performSearch);
+    searchBar.addEventListener('keypress', (event) => {
+        if (event.key === 'Enter') performSearch();
+    });
+});
+</script>
+{% endblock %}

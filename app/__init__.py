@@ -7,8 +7,9 @@ from .blueprints.main import main_bp
 from .blueprints.project_submissions import project_submissions_bp
 from .blueprints.github_auth import github_bp
 from .blueprints.error_hadling import errors
-
-# from .blueprints.search import search_bp
+from .blueprints.search import search_bp
+from .blueprints.user_pages import user_bp
+from .blueprints.topic_pages import topic_bp
 
 
 def create_app(config_name=None):
@@ -27,4 +28,6 @@ def register_blueprints(app):
     app.register_blueprint(project_submissions_bp)
     app.register_blueprint(github_bp)
     app.register_blueprint(errors)
-    # app.register_blueprint(search_bp)
+    app.register_blueprint(search_bp)
+    app.register_blueprint(user_bp)
+    app.register_blueprint(topic_bp)

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+  <!-- Topic Title -->
+  <h2 class="text-center text-primary">{{ topic }}</h2>
+  
+  <!-- Topic Stats -->
+  <div class="row justify-content-center mt-4">
+    <div class="col-md-8">
+      <div class="card shadow-lg border-0 mb-4">
+        <div class="card-header bg-info text-white text-center">
+          <h5 class="mb-0">Topic Overview</h5>
+        </div>
+        <div class="card-body">
+          <p><strong>Total Projects:</strong> {{ total_projects }}</p>
+          <p><strong>Unique Students:</strong> {{ unique_students }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- List of Students -->
+  <h3 class="text-center mt-5">Students worked with "{{ topic }}"</h3>
+  <div class="row justify-content-center mt-3">
+    <div class="col-md-8">
+      <ul class="list-group shadow-lg">
+        {% if students %}
+        {% for full_name, username in students %}
+          <li class="list-group-item">
+            <a href="/users/{{ username }}" class="text-decoration-none">{{ full_name }}</a>
+          </li>
+        {% endfor %}
+        {% else %}
+          <li class="list-group-item text-center">No students available for this topic.</li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}
