@@ -62,6 +62,7 @@ def find_users(search_term):
         RETURN node.full_name AS name,
                node.github_username AS github_username,
                node.username AS username,
+               node.uid AS uid,
                score
         ORDER BY score DESC
         """
@@ -79,9 +80,10 @@ def find_users(search_term):
                 "name": name,
                 "github_username": github_username,
                 "username": username,
+                "uid": uid,
                 "score": score,
             }
-            for name, github_username, username, score in results[0]
+            for name, github_username, username, uid, score in results[0]
             if score > 0
         ]
         # log users_data to file

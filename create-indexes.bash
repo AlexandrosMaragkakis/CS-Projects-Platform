@@ -2,7 +2,7 @@
 
 # Wait for Neo4j to be fully up and running
 sleep 15
-echo "Creating indexes and constraints"
+echo "Creating indexes and constraints..."
 # Create indexes and constraints using Cypher commands
 cypher-shell -u neo4j -p test1234 <<EOF
 CREATE FULLTEXT INDEX topicsFulltextIndex IF NOT EXISTS FOR (n:Topic) ON EACH [n.name];
@@ -16,3 +16,4 @@ CREATE CONSTRAINT unique_student_github_token IF NOT EXISTS FOR (s:Student) REQU
 CREATE CONSTRAINT unique_company_name IF NOT EXISTS FOR (c:Company) REQUIRE c.company_name IS UNIQUE;
 CREATE CONSTRAINT unique_github_project_url IF NOT EXISTS FOR (p:Project) REQUIRE p.github_url IS UNIQUE;
 EOF
+echo "Indexes and constraints created."

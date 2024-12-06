@@ -5,12 +5,12 @@ from flask_login import login_required, current_user  # type: ignore
 from .services import get_user_info, get_submitted_repos, get_topics
 
 
-@user_bp.route("/users/<username>", methods=["GET"])
+@user_bp.route("/users/<user_id>", methods=["GET"])
 @login_required
-def users(username):
+def users(user_id):
     """Public user page"""
 
-    user_info = get_user_info(username)
+    user_info = get_user_info(user_id)
     submitted_repos = get_submitted_repos(current_user.get_id())
     projects = get_topics(submitted_repos)
     topics = sorted(
