@@ -1,4 +1,6 @@
 # app/__init__.py
+
+# imports
 from flask import Flask  # type: ignore
 from .config import config_by_name
 from .extentions import init_extensions
@@ -13,6 +15,8 @@ from .blueprints.topic_pages import topic_bp
 
 
 def create_app(config_name=None):
+    """Factory function for creating the app object"""
+
     app = Flask(__name__, static_url_path="/static")
     app.config.from_object(config_by_name[config_name or "development"])
     print(app.config)
@@ -23,6 +27,7 @@ def create_app(config_name=None):
 
 
 def register_blueprints(app):
+    """Register all blueprints for the application"""
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(project_submissions_bp)

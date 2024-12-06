@@ -1,6 +1,7 @@
 from werkzeug.security import generate_password_hash, check_password_hash  # type: ignore
 from .models import User, Student, Company
 from flask import session  # type: ignore
+from neomodel.exceptions import UniqueProperty  # type: ignore
 
 
 def register_user(
@@ -8,17 +9,13 @@ def register_user(
 ):
     if password != confirm_password:
         return False
-    if User.get_by_email(email):
-        return False
     hashed_password = generate_password_hash(password)
 
     if user_type == "student":
-        username = email.split("@")[0]
         user = Student(
             email=email,
             password_hash=hashed_password,
             full_name=full_name,
-            username=username,
         )
     elif user_type == "company":
         user = Company(
@@ -30,7 +27,10 @@ def register_user(
     else:
         raise ValueError("Invalid user type")
 
-    user.save()
+    try:
+        user.save()
+    except UniqueProperty:
+        return False
     return user
 
 

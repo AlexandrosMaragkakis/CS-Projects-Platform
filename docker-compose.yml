@@ -13,7 +13,7 @@ services:
       neo4j:
         condition: service_healthy
     environment:
-      FLASK_ENV: development # Enable development mode for Flask
+      FLASK_ENV: development 
     restart:
       always
 
@@ -31,6 +31,7 @@ services:
     environment:
       - NEO4J_AUTH=neo4j/test1234 # not secure
       - EXTENSION_SCRIPT=/startup/create-indexes.bash
+      - NEO4J_PLUGINS=["apoc"]
     restart:
       always
     healthcheck:

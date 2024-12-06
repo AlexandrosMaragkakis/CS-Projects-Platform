@@ -11,7 +11,7 @@ from neomodel import db  # type: ignore
 class Project(StructuredNode):
     uid = UniqueIdProperty()
     github_id = IntegerProperty(unique_index=True)
-    github_url = StringProperty()
+    github_url = StringProperty(unique_index=True)
     title = StringProperty()
     description = StringProperty()
 

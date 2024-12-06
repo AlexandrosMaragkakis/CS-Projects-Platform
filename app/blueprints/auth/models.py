@@ -13,16 +13,12 @@ class User(StructuredNode, UserMixin):
 
     uid = UniqueIdProperty()
     email = EmailProperty(unique_index=True)
-    username = StringProperty(unique_index=True)
     password_hash = StringProperty()
     full_name = StringProperty()
 
     @staticmethod
     def get_by_id(user_id):
         return User.nodes.get_or_none(uid=user_id)
-
-    def get_by_username(username):
-        return User.nodes.get_or_none(username=username)
 
     @staticmethod
     def get_by_email(email):
@@ -33,13 +29,11 @@ class User(StructuredNode, UserMixin):
         email,
         password_hash,
         full_name,
-        username,
     ):
         user = User(
             email=email,
             password_hash=password_hash,
             full_name=full_name,
-            username=username,
         )
         user.save()
         return user
@@ -49,8 +43,8 @@ class User(StructuredNode, UserMixin):
 
 
 class Student(User):
-    github_username = StringProperty()
-    github_token = StringProperty()
+    github_username = StringProperty(unique_index=True)
+    github_token = StringProperty(unique_index=True)
     worked_in = Relationship(
         "app.blueprints.project_submissions.models.Project", "WORKED_IN"
     )
@@ -69,4 +63,4 @@ class Student(User):
 
 
 class Company(User):
-    company_name = StringProperty()
+    company_name = StringProperty(unique_index=True)
