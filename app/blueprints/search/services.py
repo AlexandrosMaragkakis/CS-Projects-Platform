@@ -103,7 +103,7 @@ def find_projects(search_term):
         YIELD node, score
         WITH node, score
         MATCH (s:Student)-[:WORKED_IN]-(node)
-        RETURN s.full_name AS full_name, s.username AS username, node.title AS title, 
+        RETURN s.full_name AS full_name, s.username AS username, node.title AS title,
                node.github_url AS github_url, score
         ORDER BY score DESC
         """

@@ -93,9 +93,18 @@
 
 {% block scripts %}
   <script>
-    document.getElementById("githubConnectBtn").addEventListener("click", function() {
-    window.location.href = "/github/connect"; 
-  });
+    document.addEventListener("DOMContentLoaded", function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const errorMessage = urlParams.get("error");
+
+        if (errorMessage) {
+            alert(errorMessage); // Display the error to the user
+        }
+
+        document.getElementById("githubConnectBtn").addEventListener("click", function() {
+            window.location.href = "/github/connect";
+        });
+    });
   </script>
 
 
