@@ -3,7 +3,7 @@ from neomodel import config as neomodel_config  # type: ignore
 from flask_caching import Cache  # type: ignore
 
 from authlib.integrations.flask_client import OAuth  # type: ignore
-from .blueprints.auth.models import User
+from app.models.user import User
 
 from flask import request, jsonify, redirect, url_for  # type: ignore
 

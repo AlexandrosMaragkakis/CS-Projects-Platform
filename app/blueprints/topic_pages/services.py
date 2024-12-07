@@ -1,4 +1,4 @@
-from app.blueprints.project_submissions.models import Project, Topic
+from app.models.topic import Topic
 from neomodel import db  # type: ignore
 
 
@@ -37,4 +37,4 @@ def get_topic_info(topic_name):
 
 def get_all_topics():
     topics = Topic.nodes.all
-    return [topic.name for topic in topics]
+    return topics

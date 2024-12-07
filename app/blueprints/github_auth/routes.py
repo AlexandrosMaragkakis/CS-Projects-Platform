@@ -2,7 +2,6 @@ from flask import jsonify, url_for, redirect, session  # type: ignore
 from flask_login import login_required, current_user  # type: ignore
 from neomodel.exceptions import UniqueProperty  # type: ignore
 
-# from app.blueprints.auth.models import User
 from app.blueprints.github_auth import github_bp
 from app.extentions import oauth
 from .services import update_github_username, update_github_token

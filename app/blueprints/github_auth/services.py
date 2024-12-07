@@ -1,4 +1,4 @@
-from app.blueprints.auth.models import User
+from app.models.user import User
 
 
 def update_github_username(user_id, github_username):

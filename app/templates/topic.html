@@ -26,9 +26,9 @@
     <div class="col-md-8">
       <ul class="list-group shadow-lg">
         {% if students %}
-        {% for full_name, username in students %}
+        {% for full_name, uid in students %}
           <li class="list-group-item">
-            <a href="/users/{{ username }}" class="text-decoration-none">{{ full_name }}</a>
+            <a href="/users/{{ uid }}" class="text-decoration-none">{{ full_name }}</a>
           </li>
         {% endfor %}
         {% else %}

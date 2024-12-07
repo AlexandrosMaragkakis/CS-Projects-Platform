@@ -1,4 +1,4 @@
-from app.blueprints.auth.models import User
+from app.models.user import User
 
 
 def get_user_info(user_id):

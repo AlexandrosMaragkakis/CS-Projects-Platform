@@ -2,8 +2,9 @@ import requests  # type: ignore
 from flask import redirect, url_for, jsonify, session  # type: ignore
 from flask import current_app as app  # type: ignore
 from flask_login import current_user  # type: ignore
-from app.blueprints.project_submissions.models import Project, Topic
-from app.blueprints.auth.models import Student
+from app.models.project import Project
+from app.models.user import Student
+from app.models.topic import Topic
 
 
 def get_submitted_repos(user_id):
@@ -61,7 +62,7 @@ def submit_repos_to_db(user_id, repositories):
 
 
 def fetch_public_repos(user_id):
-    from app.blueprints.auth.models import User
+    from app.models.user import User
 
     access_token = User.get_by_id(user_id).github_token
 

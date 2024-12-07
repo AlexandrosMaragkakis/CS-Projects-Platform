@@ -1,5 +1,6 @@
-from app.blueprints.project_submissions.models import Project, Topic
-from app.blueprints.auth.models import Student
+from app.models.project import Project
+from app.models.user import Student
+from app.models.topic import Topic
 from neomodel import db  # type: ignore
 
 
@@ -103,7 +104,7 @@ def find_projects(search_term):
         YIELD node, score
         WITH node, score
         MATCH (s:Student)-[:WORKED_IN]-(node)
-        RETURN s.full_name AS full_name, s.username AS username, node.title AS title,
+        RETURN s.full_name AS full_name, s.uid AS uid, node.title AS title,
                node.github_url AS github_url, score
         ORDER BY score DESC
         """
@@ -119,12 +120,12 @@ def find_projects(search_term):
         projects_data = [
             {
                 "full_name": full_name,
-                "username": username,
+                "uid": uid,
                 "title": title,
                 "github_url": github_url,
                 "score": score,
             }
-            for full_name, username, title, github_url, score in results[0]
+            for full_name, uid, title, github_url, score in results[0]
             if score > 0
         ]
         # log projects_data to file

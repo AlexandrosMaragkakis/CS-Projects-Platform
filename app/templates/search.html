@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     data.projects.forEach(project => {
                         projectsHTML += `
                             <li class="list-group-item">
-                                <h5>${project.title}, by <a href="/users/${project.username}">${project.full_name}</a></h5>
+                                <h5>${project.title}, by <a href="/users/${project.uid}">${project.full_name}</a></h5>
                                 <a href="${project.github_url}" target="_blank" class="btn btn-sm btn-outline-primary">View on GitHub</a>
                             </li>`;
                     });

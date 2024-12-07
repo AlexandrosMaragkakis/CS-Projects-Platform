@@ -5,7 +5,8 @@ from neomodel import (  # type: ignore
     EmailProperty,
     Relationship,
 )
-
+from app.models.topic import Topic
+from app.models.project import Project
 from flask_login import UserMixin  # type: ignore
 
 
@@ -45,15 +46,8 @@ class User(StructuredNode, UserMixin):
 class Student(User):
     github_username = StringProperty(unique_index=True)
     github_token = StringProperty(unique_index=True)
-    worked_in = Relationship(
-        "app.blueprints.project_submissions.models.Project", "WORKED_IN"
-    )
-    skilled_in = Relationship(
-        "app.blueprints.project_submissions.models.Topic", "SKILLED_IN"
-    )
-    # interested_in = Relationship(
-    #    "app.blueprints.project_submissions.models.Topic", "INTERESTED_IN"
-    # )
+    worked_in = Relationship(Project, "WORKED_IN")
+    skilled_in = Relationship(Topic, "SKILLED_IN")
 
     def get_projects(self):
         return self.worked_in.all()

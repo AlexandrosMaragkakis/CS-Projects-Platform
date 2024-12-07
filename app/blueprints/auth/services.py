@@ -1,5 +1,5 @@
 from werkzeug.security import generate_password_hash, check_password_hash  # type: ignore
-from .models import User, Student, Company
+from app.models.user import User, Student, Company
 from flask import session  # type: ignore
 from neomodel.exceptions import UniqueProperty  # type: ignore
 
