@@ -4,22 +4,22 @@ from neomodel.exceptions import UniqueProperty  # type: ignore
 from .exceptions import UserAlreadyExistsError, InvalidCredentialsError
 
 
-def register_user(email, password, full_name, user_type, company_name=None):
+def register_user(user_type, **data):
 
-    hashed_password = generate_password_hash(password)
+    hashed_password = generate_password_hash(data["password"])
 
     if user_type == "student":
         user = Student(
-            email=email,
+            email=data["email"],
             password_hash=hashed_password,
-            full_name=full_name,
+            full_name=data["full_name"],
         )
     elif user_type == "company":
         user = Company(
-            email=email,
+            email=data["email"],
             password_hash=hashed_password,
-            full_name=full_name,
-            company_name=company_name,
+            full_name=data.get("full_name"),
+            company_name=data["company_name"],
         )
     else:
         raise ValueError("Invalid user type")
