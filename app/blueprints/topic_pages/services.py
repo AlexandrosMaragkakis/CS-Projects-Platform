@@ -13,6 +13,7 @@ def get_topic_info(topic_name):
         f"MATCH p=(t:Topic{{name: '{topic_name}'}})-[r:TAGGED_WITH]-(a) RETURN count(p)"
     )[0][0][0]
 
+    # maybe do these 2 next qs in 1?
     # Get the total number of unique students who worked on projects in the topic
     unique_students = db.cypher_query(
         f"MATCH p=(t:Topic{{name: '{topic_name}'}})-[r:SKILLED_IN]-(s:Student) RETURN count(distinct s)"
@@ -21,7 +22,7 @@ def get_topic_info(topic_name):
     # Get the students who are skilled in the topic
     students = db.cypher_query(
         f"MATCH p=(t:Topic{{name: '{topic_name}'}})-[r:SKILLED_IN]-(s:Student) \
-          RETURN s.full_name, s.username"
+          RETURN s.full_name, s.uid"
     )[0]
 
     # log students to file
