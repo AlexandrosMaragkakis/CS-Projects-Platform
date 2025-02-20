@@ -9,10 +9,13 @@ from .services import (
     delete_project,
 )
 from app.extensions import cache
+from app.models.user import Student
+from app.utils.permissions import role_required
 
 
 @project_submissions_bp.route("/submit", methods=["GET"])
 @login_required
+@role_required(allowed_roles=[Student])
 def submit():
     submitted_repos = get_submitted_repos(current_user.get_id())
     repos_final = get_topics(submitted_repos)
@@ -21,6 +24,7 @@ def submit():
 
 @project_submissions_bp.route("/projects/fetch_repos", methods=["POST"])
 @login_required
+@role_required(allowed_roles=[Student])
 def fetch_repos():
     user_id = current_user.get_id()
     cached_result = cache.get(f"fetched_repos_{user_id}")
@@ -38,6 +42,7 @@ def fetch_repos():
 
 @project_submissions_bp.route("/projects/submit_repos", methods=["POST"])
 @login_required
+@role_required(allowed_roles=[Student])
 def submit_repos():
     data = request.get_json()
     repositories = data.get("repositories")
@@ -63,6 +68,7 @@ def submit_repos():
 
 @project_submissions_bp.route("/projects/delete/<int:github_id>", methods=["POST"])
 @login_required
+@role_required(allowed_roles=[Student])
 def delete(github_id):
     try:
         delete_project(github_id)

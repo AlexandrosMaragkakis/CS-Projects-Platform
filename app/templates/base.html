@@ -79,9 +79,11 @@
         <li class="nav-item">
           <a class="nav-link" href="/profile" style="font-size: 0.95rem; color: #555; padding-right: 20px;">Profile</a>
         </li>
+        {% if current_user.is_authenticated and current_user.__class__.__name__ == 'Student' %}
         <li class="nav-item">
           <a class="nav-link" href="/submit" style="font-size: 0.95rem; color: #555; padding-right: 20px;">Submit</a>
         </li>
+        {% endif %}
         <li class="nav-item">
           <a class="nav-link" href="/search" style="font-size: 0.95rem; color: #555; padding-right: 20px;">Search</a>
         <li class="nav-item">

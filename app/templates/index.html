@@ -221,6 +221,8 @@
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.get('next') === 'login_required') {
           $('#authModal').modal('show');
+      } else if (urlParams.get('next') === 'permissions_error') {
+          alert('You do not have permission to access this page.');
       }
   });
 </script>
