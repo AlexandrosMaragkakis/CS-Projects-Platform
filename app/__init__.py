@@ -3,7 +3,7 @@
 # imports
 from flask import Flask  # type: ignore
 from .config import config_by_name
-from .extentions import init_extensions
+from .extensions import init_extensions
 from .blueprints.auth import auth_bp
 from .blueprints.main import main_bp
 from .blueprints.project_submissions import project_submissions_bp

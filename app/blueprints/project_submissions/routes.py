@@ -8,7 +8,7 @@ from .services import (
     get_topics,
     delete_project,
 )
-from app.extentions import cache
+from app.extensions import cache
 
 
 @project_submissions_bp.route("/submit", methods=["GET"])
