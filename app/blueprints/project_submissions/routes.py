@@ -58,13 +58,6 @@ def submit_repos():
 
     return {"success": True}
 
-    # Update the list of submitted projects
-    # submitted_repos = get_submitted_repos(user_id)
-    # log submitted_repos to file
-    # with open("submitted_repos.txt.tmp", "a") as f:
-    #    f.write(str(submitted_repos) + "\n")
-    # return render_template("submit.html", user=current_user, repos=submitted_repos)
-
 
 @project_submissions_bp.route("/projects/delete/<int:github_id>", methods=["POST"])
 @login_required

@@ -55,6 +55,22 @@ class Student(User):
     def get_topics(self):
         return self.skilled_in.all()
 
+    @property
+    def is_student(self):
+        return True
+
+    @property
+    def is_company(self):
+        return False
+
 
 class Company(User):
     company_name = StringProperty(unique_index=True)
+
+    @property
+    def is_company(self):
+        return True
+
+    @property
+    def is_student(self):
+        return False

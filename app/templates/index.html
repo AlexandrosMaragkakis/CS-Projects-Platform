@@ -155,7 +155,6 @@
 
     document.getElementById('userType').addEventListener('change', function () {
       const userType = this.value;
-      //console.log(userType);
       document.getElementById('companyFields').style.display = userType === 'company' ? 'block' : 'none';
       const companyNameField = document.getElementById('companyName');
       companyNameField.required = userType === 'company';

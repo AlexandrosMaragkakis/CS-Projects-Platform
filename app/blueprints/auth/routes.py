@@ -16,9 +16,10 @@ def login():
         user = authenticate_user(email, password)
         login_user(user)
 
-        session["github_authenticated"] = bool(
-            user.github_token is not None and user.github_username is not None
-        )
+        if user.is_student:
+            session["github_authenticated"] = bool(
+                user.github_token is not None and user.github_username is not None
+            )
 
         return jsonify({"success": True, "redirect_url": url_for("main.profile")})
 

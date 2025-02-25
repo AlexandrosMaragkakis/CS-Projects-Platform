@@ -3,6 +3,8 @@ from app.models.user import Student
 from app.models.topic import Topic
 from neomodel import db  # type: ignore
 
+# TODO: find_* functions have a lot of duplicated code, consider refactoring
+
 
 def search_by_topic_(topic_name):
     topic = Topic.nodes.get_or_none(name=topic_name)
@@ -10,10 +12,8 @@ def search_by_topic_(topic_name):
     if topic is None:
         raise ValueError(f"Topic {topic_name} not found")
 
-    projects = Project.nodes.all()
+    # projects = Project.nodes.all()
     projects = [p for p in Project.nodes.all() if topic in p.tagged_with.all()]
-    with open("search_by_topic.txt.tmp", "a") as f:
-        f.write(str(projects) + "\n")
     return projects
 
 
@@ -35,16 +35,10 @@ def find_topics(search_term):
         # fuzzy search
         results = db.cypher_query(query, {"search_term": search_term + "~"})
 
-        # log results to file
-        with open("search_results.txt.tmp", "a") as f:
-            f.write(str(results) + "\n")
         # Convert to list of dictionaries for easy JSON serialization
         matched_topics = [
             {"name": topic, "score": score} for topic, score in results[0] if score > 0
         ]
-        # log matched_topics to file
-        with open("matched_topics.txt.tmp", "a") as f:
-            f.write(str(matched_topics) + "\n")
 
         return matched_topics
     except Exception as e:
@@ -53,9 +47,6 @@ def find_topics(search_term):
 
 def find_users(search_term):
 
-    # log query to file
-    with open("search_query.txt.tmp", "a") as f:
-        f.write(search_term + "\n")
     try:
         query = """
         CALL db.index.fulltext.queryNodes('studentsFulltextIndex', $search_term)
@@ -109,10 +100,6 @@ def find_projects(search_term):
 
         # fuzzy search, must see if ~ works for entire string or just the last word
         results = db.cypher_query(query, {"search_term": search_term + "~"})
-
-        # log results to file
-        with open("search_results.txt.tmp", "a") as f:
-            f.write(str(results) + "\n")
 
         # Convert to list of dictionaries for easy JSON serialization
         projects_data = [

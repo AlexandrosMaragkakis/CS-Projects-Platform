@@ -9,8 +9,6 @@ from .services import (
     find_projects,
 )
 
-# from app.extentions import cache
-
 
 @search_bp.route("/search", methods=["GET"])
 @login_required
@@ -21,12 +19,8 @@ def search():
 @search_bp.route("/search/topics/<search_query>", methods=["GET"])
 @login_required
 def search_for_topics(search_query):
-    # search_query = request.args.get("query")
-    try:
-        # log search_query to file
-        with open("search_query.txt.tmp", "a") as f:
-            f.write(search_query + "\n")
 
+    try:
         matched_topics = find_topics(search_query)
         if matched_topics is None:
             return {"success": False, "error": "No matching topics"}
@@ -68,26 +62,3 @@ def search_for_projects():
         return {"success": True, "projects": projects}
     except Exception as e:
         return {"success": False, "error": str(e)}
-
-
-"""
-@search_bp.route("/search/topics", methods=["GET"])
-@login_required
-def search_by_topic():
-    topic_name = request.args.get("topic")
-    try:
-        projects = search_by_topic_(topic_name)
-        projects_data = [
-            {
-                "id": project.uid,
-                "title": project.title,
-                "url": project.github_url,
-                "description": project.description,
-                # "topics": project.tagged_with.all(),
-            }
-            for project in projects
-        ]
-        return {"success": True, "projects": projects_data}
-    except Exception as e:
-        return {"success": False, "error": str(e)}
-"""

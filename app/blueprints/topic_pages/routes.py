@@ -14,9 +14,3 @@ def topic(topic):
         unique_students=unique_students,
         students=students,
     )
-
-
-# @topic_bp.route("/topics")
-# def topics():
-#    topics = get_all_topics()
-#    return render_template("topics.html", topics=topics)

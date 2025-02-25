@@ -89,9 +89,7 @@ def fetch_public_repos(user_id):
         if len(repos) < 100:
             break
         page += 1
-    # log response to file
-    # with open("repos_response.txt.tmp", "w") as f:
-    #    f.write(str(repos_response.json()))
+
     filtered_repos = [
         {
             "github_id": repo["id"],
@@ -104,9 +102,6 @@ def fetch_public_repos(user_id):
     ]
 
     session["fetched_repos"] = filtered_repos
-    # log filtered_repos to file with all contents
-    with open("filtered_repos.txt.tmp", "w") as f:
-        f.write(str(filtered_repos))
     return filtered_repos
 
 
