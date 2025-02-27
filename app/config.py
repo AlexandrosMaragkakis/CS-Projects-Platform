@@ -30,6 +30,9 @@ class Config:
     SESSION_COOKIE_SECURE = True  # Enable for HTTPS in production
     REMEMBER_COOKIE_DURATION = 3600  # Duration for 'remember me' sessions (1 hour)
 
+    JOB_SERVICE_URL = os.environ.get("JOB_SERVICE_URL", "http://job-service:80")
+    DB_API_URL = os.environ.get("DB_API_URL", "http://db-service:80")
+
 
 class DevelopmentConfig(Config):
     """Development-specific configuration."""

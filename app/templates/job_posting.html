@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Submit a Job{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h1>Submit a Job</h1>
+  <!-- Notification div for JS messages -->
+  <div id="notification"></div>
+  
+  <!-- Job posting form with an id for JS reference -->
+  <form id="jobForm" method="post" action="{{ url_for('job_posting.submit_job') }}">
+    <div class="form-group">
+      <label for="job_url">Job URL</label>
+      <input type="text" class="form-control" id="job_url" name="job_url" placeholder="Enter job URL" required>
+    </div>
+    <div class="form-group mt-2">
+      <label for="site">Site</label>
+      <input type="text" class="form-control" id="site" name="site" placeholder="Enter site (e.g., linkedin)" required>
+    </div>
+    <button type="submit" class="btn btn-primary mt-3">Submit Job</button>
+  </form>
+
+  <hr class="my-4">
+
+  <h2>Submitted Jobs</h2>
+  {% if jobs %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+      {% for job in jobs %}
+        <div class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title">{{ job.title }}</h5>
+              <p class="card-text">
+                <strong>Status:</strong> {{ job.status or "Processing" }}
+              </p>
+              <a href="{{ job.url }}" class="btn btn-outline-primary btn-sm" target="_blank">View Job</a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>No jobs submitted yet.</p>
+  {% endif %}
+</div>
+
+<!-- JavaScript to handle the form submission via AJAX -->
+<script>
+document.getElementById("jobForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const job_url = formData.get("job_url");
+    const site = formData.get("site");
+    try {
+      const response = await fetch("{{ url_for('job_posting.submit_job') }}", {
+          method: "POST",
+          body: new URLSearchParams({ job_url, site }),
+          headers: {
+              "X-Requested-With": "XMLHttpRequest"
+          }
+      });
+      const result = await response.json();
+      const notificationDiv = document.getElementById("notification");
+      if(result.status === "success") {
+          notificationDiv.innerHTML = `<div class="alert alert-success">${result.message}</div>`;
+          // Optionally reload the page to update the job list after a short delay
+          setTimeout(() => { location.reload(); }, 2000);
+      } else {
+          notificationDiv.innerHTML = `<div class="alert alert-danger">${result.message}</div>`;
+      }
+    } catch (error) {
+      document.getElementById("notification").innerHTML = `<div class="alert alert-danger">Error submitting job: ${error.message}</div>`;
+    }
+});
+</script>
+{% endblock %}

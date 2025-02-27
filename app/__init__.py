@@ -12,6 +12,7 @@ from .blueprints.error_hadling import errors
 from .blueprints.search import search_bp
 from .blueprints.user_pages import user_bp
 from .blueprints.topic_pages import topic_bp
+from .blueprints.job_posting import job_posting_bp
 
 
 def create_app(config_name=None):
@@ -19,7 +20,7 @@ def create_app(config_name=None):
 
     app = Flask(__name__, static_url_path="/static")
     app.config.from_object(config_by_name[config_name or "development"])
-    print(app.config)
+    # print(app.config)
     init_extensions(app)
     register_blueprints(app)
 
@@ -36,3 +37,4 @@ def register_blueprints(app):
     app.register_blueprint(search_bp)
     app.register_blueprint(user_bp)
     app.register_blueprint(topic_bp)
+    app.register_blueprint(job_posting_bp)

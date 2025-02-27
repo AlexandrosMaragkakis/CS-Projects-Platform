@@ -69,7 +69,7 @@
     <div class="collapse navbar-collapse justify-content-end" id="navbarContent">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link" href="/" style="font-size: 0.95rem; color: #555; padding-right: 20px;">Home</a>
+          <a class="nav-link" href="{{ url_for('main.home') }}" style="font-size: 0.95rem; color: #555; padding-right: 20px;">Home</a>
         </li>
         {% if not current_user.is_authenticated %}
         <li class="nav-item">
@@ -77,19 +77,26 @@
         </li>
         {% else %}
         <li class="nav-item">
-          <a class="nav-link" href="/profile" style="font-size: 0.95rem; color: #555; padding-right: 20px;">Profile</a>
+          <a class="nav-link" href="{{ url_for('main.profile') }}" style="font-size: 0.95rem; color: #555; padding-right: 20px;">Profile</a>
         </li>
         {% if current_user.is_authenticated and current_user.__class__.__name__ == 'Student' %}
         <li class="nav-item">
-          <a class="nav-link" href="/submit" style="font-size: 0.95rem; color: #555; padding-right: 20px;">Submit</a>
+          <a class="nav-link" href="{{ url_for('project_submissions.submit') }}" style="font-size: 0.95rem; color: #555; padding-right: 20px;">Submit</a>
         </li>
         {% endif %}
         <li class="nav-item">
-          <a class="nav-link" href="/search" style="font-size: 0.95rem; color: #555; padding-right: 20px;">Search</a>
+          <a class="nav-link" href="{{ url_for('search.search') }}" style="font-size: 0.95rem; color: #555; padding-right: 20px;">Search</a>
+        </li>
+        {% if current_user.is_authenticated and current_user.company_name %}
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('job_posting.submit_job') }}" style="font-size: 0.95rem; color: #555; padding-right: 20px;">Post Jobs</a>
+        </li>
+        {% endif %}
         <li class="nav-item">
           <button class="btn" id="logoutBtn" style="background-color: #dc3545; color: white; font-size: 0.9rem; padding: 8px 16px; border-radius: 4px;">Logout</button>
         </li>
         {% endif %}
+
       </ul>
     </div>
 </nav>
