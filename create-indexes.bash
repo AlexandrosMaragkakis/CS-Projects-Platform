@@ -15,5 +15,7 @@ CREATE CONSTRAINT unique_student_github_username IF NOT EXISTS FOR (s:Student) R
 CREATE CONSTRAINT unique_student_github_token IF NOT EXISTS FOR (s:Student) REQUIRE s.github_token IS UNIQUE;
 CREATE CONSTRAINT unique_company_name IF NOT EXISTS FOR (c:Company) REQUIRE c.company_name IS UNIQUE;
 CREATE CONSTRAINT unique_github_project_url IF NOT EXISTS FOR (p:Project) REQUIRE p.github_url IS UNIQUE;
+CREATE CONSTRAINT unique_uid IF NOT EXISTS FOR (u:User) REQUIRE u.uid IS UNIQUE;
+CREATE CONSTRAINT unique_project_uid IF NOT EXISTS FOR (p:Project) REQUIRE p.uid IS UNIQUE;
 EOF
 echo "Indexes and constraints created."
